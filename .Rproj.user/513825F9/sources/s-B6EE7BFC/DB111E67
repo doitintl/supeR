@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571827150342.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "DB111E67",
+    "lastKnownWriteTime" : 140531329925120,
+    "last_content_update" : 1571827150342,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "id" : "ae413789c29941dda71f30bfa0f9fb16",
+        "name" : "res@.Data",
+        "title" : "res@.Data"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "object_explorer"
+}

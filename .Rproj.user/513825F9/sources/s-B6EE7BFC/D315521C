@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571818126931.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "D315521C",
+    "lastKnownWriteTime" : 1571818322,
+    "last_content_update" : 1571818322543,
+    "path" : "~/Development/superQuery/firstpackage/supeR/DESCRIPTION",
+    "project_path" : "DESCRIPTION",
+    "properties" : {
+        "cursorPosition" : "13,0",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "dcf"
+}
