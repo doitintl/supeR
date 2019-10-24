@@ -12,8 +12,8 @@ SuperR sqQuery
 client <- sqInitClient()
 res <-sqQuery(client, host="aaa", username="xxx", password="xxx", jobId = "yyy", sql="SELECT")
 OR
-client <- sqInitClient(host="aaa", username="xxx", password="xxx", jobId = "yyy", sql="SELECT")
-res <-sqQuery(client, sql="SELECT")
+client <- sqInitClient(host="aaa", port=0000, username="xxx", password="xxx")
+res <-sqQuery(client, jobId = "yyy", sql="SELECT")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
