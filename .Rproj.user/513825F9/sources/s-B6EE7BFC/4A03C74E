@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "3271532724",
+    "hash" : "0",
     "id" : "4A03C74E",
     "lastKnownWriteTime" : 1571905262,
     "last_content_update" : 1571905262279,
     "path" : "~/Development/superQuery/firstpackage/supeR/R/supeR.R",
     "project_path" : "R/supeR.R",
     "properties" : {
-        "cursorPosition" : "144,25",
-        "scrollLine" : "135",
+        "cursorPosition" : "5,20",
+        "scrollLine" : "0",
         "tempName" : "Untitled1"
     },
     "read_only" : false,
