@@ -1,36 +1,41 @@
 \name{supeR}
-\alias{sqInitClient}
 \alias{sqQuery}
+\alias{sqHost}
+\alias{sqProjectId}
+
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 SuperR sqQuery
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+To query SuperQuery.
+Set environment variables
+terminal:
+export SUPERQUERY_USERNAME=xxxxxx
+export SUPERQUERY_PASSWORD=xxxxxx
+console:
+> Sys.setenv(SUPERQUERY_USERNAME="xxxxxx")
+> Sys.setenv(SUPERQUERY_PASSWORD="xxxxxx")
+
 }
 \usage{
-client <- sqInitClient()
-res <-sqQuery(client, host="aaa", username="xxx", password="xxx", jobId = "yyy", sql="SELECT")
-OR
-client <- sqInitClient(host="aaa", port=0000, username="xxx", password="xxx")
-res <-sqQuery(client, jobId = "yyy", sql="SELECT")
+res <-sqQuery(sql="SELECT",jobId="abc")
+overrides :
+client <- sqInitClient(host="aaa", projectId="yyy" jobId = "abc", sql="SELECT")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{host}{
-      The Hostname of the Super Query Server... Mostly bi.superquery.io
-  }
-  \item{username}{
-      SuperQuery MySQL UserName
-  }
-  \item{password}{
-      SuperQuery MySQL Password
-  }
   \item{jobId}{
       SuperQuery JobId
   }
   \item{sql}{
       SuperQuery SQL Query Please note that table names need to enclosed by `
+  }
+  \item{projectId}{
+      Provide optional projectId
+  }
+  \item{host}{
+      Override default Hostname of the Super Query Server... Mostly bi.superquery.io
   }
 }
 \details{
@@ -59,8 +64,10 @@ Corrie Painter
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-client <- sqInitClient()
-res <-sqQuery(client, host="aaa", username="xxx", password="xxx", jobId = "yyy", sql="SELECT")
+Sys.setenv(SUPERQUERY_USERNAME="xxxxxx")
+Sys.setenv(SUPERQUERY_PASSWORD="xxxxxx")
+
+res <-sqQuery(sql="SELECT",jobId="abc")
 View(res@result)
 View(res@stats)
 

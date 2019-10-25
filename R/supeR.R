@@ -22,6 +22,7 @@ setClass(
     password = "character",
     jobId = "character",
     projectId = "character",
+    userAgent = "character",
     conn = "MySQLConnection",
     result = "SuperQueryResult"
   ),
@@ -29,53 +30,69 @@ setClass(
     host = "bi.superquery.io",
     port = 3306,
     username = Sys.getenv("SUPERQUERY_USERNAME"),
-    password = Sys.getenv("SUPERQUERY_PASSWORD")
+    password = Sys.getenv("SUPERQUERY_PASSWORD"),
+    userAgent = "proxyApi",
+    projectId = NULL
   ),
 )
 
-#' @export
-sqInitClient <- function(host = NULL,
-                         port = NULL,
-                         username = NULL,
-                         password = NULL){
-  if (is.null(host) && is.null(password)
-      && is.null(port) && is.null(username)){
-    new("SuperQueryClient")
-  }else if (!is.null(host) && !is.null(password)
-            && !is.null(port) && !is.null(username)) {
-    new("SuperQueryClient", host=host, port=port,
-        username=username, password=password)
-  }else{
-    stop("Client must be initialized with empty params or values for all params")
-  }
-
-}
-
 # Getter for ProjectId
 #' @export
-setGeneric("projectId", function(x) standardGeneric("projectId"))
+setGeneric("sqProjectId", function(x) standardGeneric("sqProjectId"))
 #' @export
-setMethod("projectId","SuperQueryClient",function(x){
+setMethod("sqProjectId","SuperQueryClient",function(x){
   x@projectId
 })
 
 # Setter for ProjectId
 #' @export
-setGeneric("projectId<-", function(x,value) standardGeneric("projectId<-"))
+setGeneric("sqProjectId<-", function(x,value) standardGeneric("sqProjectId<-"))
 #' @export
-setMethod("projectId<-","SuperQueryClient",function(x,value){
+setMethod("sqProjectId<-","SuperQueryClient",function(x,value){
   x@projectId <- value
   x
 })
 
+# Getter for userAgent
+#' @export
+setGeneric("sqUserAgent", function(x) standardGeneric("sqUserAgent"))
+#' @export
+setMethod("sqUserAgent","SuperQueryClient",function(x){
+  x@userAgent
+})
+
+# Setter for userAgent
+#' @export
+setGeneric("sqUserAgent<-", function(x,value) standardGeneric("sqUserAgent<-"))
+#' @export
+setMethod("sqUserAgent<-","SuperQueryClient",function(x,value){
+  x@userAgent <- value
+  x
+})
+
+# Getter for sqHost
+#' @export
+setGeneric("sqHost", function(x) standardGeneric("sqHost"))
+#' @export
+setMethod("sqHost","SuperQueryClient",function(x){
+  x@host
+})
+
+# Setter for userAgent
+#' @export
+setGeneric("sqHost<-", function(x,value) standardGeneric("sqHost<-"))
+#' @export
+setMethod("sqHost<-","SuperQueryClient",function(x,value){
+  x@host <- value
+  x
+})
+
+
 setGeneric(name="sqQuery",
-           def=function(client,
-                        sql = NULL,
+           def=function(sql = NULL,
                         jobId = NULL,
                         host = NULL,
-                        port = 3306,
-                        username = NULL,
-                        password = NULL)
+                        projectId = NULL)
            {
              standardGeneric("sqQuery")
            }
@@ -84,34 +101,19 @@ setGeneric(name="sqQuery",
 #' @export
 #' @rdname SuperR
 #' @importClassesFrom RMySQL MySQLConnection MySQLResult
-setMethod("sqQuery", "SuperQueryClient", function(client,
-                                               sql = NULL,
-                                               jobId = NULL,
-                                               host = NULL,
-                                               port = 3306,
-                                               username = NULL,
-                                               password = NULL) {
+sqQuery <- function(sql = NULL,
+                    jobId = NULL,
+                    host = NULL,
+                    projectId = NULL){
+  # Initialize client...
 
-  if (is.null(username) || !is.character(username)){
-    if (!is.null(client@username) && is.character(client@username)){
-      username <- client@username
-    }else{
-      stop("Argument username must be a string")
-    }
+  client <- new("SuperQueryClient")
+
+  if (is.null(client@username) || !is.character(client@username)){
+    stop("Please provide valid credentials as environment variables ")
   }
-  if (is.null(password) || !is.character(password)){
-    if (!is.null(client@password) && is.character(client@password)){
-      password <- client@password
-    }else{
-      stop("Argument password must be a string")
-    }
-  }
-  if (is.null(host) || !is.character(host)){
-    if (!is.null(client@host) && is.character(client@host)){
-      host <- client@host
-    }else{
-      stop("Argument host must be a string")
-    }
+  if (is.null(client@password) || !is.character(client@password)){
+    stop("Please provide valid credentials as environment variables ")
   }
   if (is.null(jobId) || !is.character(jobId)){
     if (!is.null(client@jobId) && is.character(client@jobId)){
@@ -120,31 +122,35 @@ setMethod("sqQuery", "SuperQueryClient", function(client,
       stop("Argument jobId must be a string")
     }
   }
+  if (!is.null(host) && is.character(host)){
+    sqHost(client)<- host
+  }
+  if (!is.null(projectId) && is.character(projectId)){
+    sqProjectId(client)<- projectId
+  }
+
   print("Connecting...")
   client@conn <- dbConnect(RMySQL::MySQL(),
-                          host=host,
-                          port=port,
-                          username=username,
-                          password=password)
+                          host=client@host,
+                          port=client@port,
+                          username=client@username,
+                          password=client@password)
 
   print("Connected!")
   #print(client@conn@Id)
-  projectID <- client@projectId
-  if (!is.null(projectID)){
+  if (!is.null(client@projectId)){
     print("Setting projectId...")
-    projId <- dbSendQuery(client@conn, paste("SET super_projectId=", projectID))
+    projId <- dbSendQuery(client@conn, paste("SET super_projectId=", client@projectId))
   }
 
   proj <- dbSendQuery(client@conn, paste("SET super_clientJobId =", jobId))
+  if (!is.null(client@userAgent)){
+    print("Setting userAgent...")
+    proj <- dbSendQuery(client@conn, paste("SET super_userAgent =", client@userAgent))
+  }
   print("Querying...")
   query <- dbSendQuery(client@conn, sql)
-
-  l <- vector("list", dbGetRowCount(query))
-  while(!dbHasCompleted(query)){
-    chunk <- dbFetch(query, n = 50)
-    l <- rbind (l, chunk)
-  }
-  queryResult <- l
+  queryResult <- dbFetch(query)
   dbClearResult(query)
   stats <- dbSendQuery(client@conn, "explain")
   queryStats <- dbFetch(stats)
@@ -153,5 +159,4 @@ setMethod("sqQuery", "SuperQueryClient", function(client,
   print("Success!")
   new("SuperQueryResult", result=queryResult, stats = queryStats)
 
-})
-
+}

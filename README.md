@@ -34,6 +34,16 @@ devtools::install_github("r-dbi/RMySQL")
 * In the left side-bar, click on the "Integrations" icon
 * Scroll down until you see "MySQL" and click "Connect"
 * Note the username and password
+* Set these two environment variables in your local environment:
+```
+export SUPERQUERY_USERNAME=xxxxxx
+export SUPERQUERY_PASSWORD=xxxxxx
+```
+* Or in RStudio:
+```
+Sys.setenv(SUPERQUERY_USERNAME="xxxxxx")
+Sys.setenv(SUPERQUERY_PASSWORD="xxxxxx")
+```
 
 # The basic flow
 * Get your autentication details (See "Authentication" above)
@@ -43,18 +53,6 @@ devtools::install_github("r-dbi/RMySQL")
 library(supeR)
 ``` 
 
-* Create a superQuery client: 
-``` 
-client <- sqInitClient()
-OR
-client <- sqInitClient(host="aaa", port=0000, username="xxx", password="xxx")
-```
-
-* Set your Google Cloud billing project: 
-```
-projectId(client) <- "XYZ"
-```
-
 * Decide what SQL statement you'd like to run: 
 ``` 
 query <- "SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIMIT 10"
@@ -62,10 +60,7 @@ query <- "SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current` LIM
 
 * Get your results: 
 ```
-res <- sqQuery(client,jobId = "yyy", sql=query)
-OR
-if client wasn't initialized with params then specify in sqQuery
-res <- sqQuery(client, host="aaa", port=0000, username="xxx", password="xxx", jobId = "yyy", sql=query)
+res <- sqQuery(jobId = "yyy", sql=query)
 ```
 
 * View your results:
@@ -78,17 +73,14 @@ View(res@result)
 View(res@stats)
 ```
 
-## Alternative supplying credentials
-* Set these two variables in your local environment:
+* Override your host:
 ```
-export SUPERQUERY_USERNAME=xxxxxx
-export SUPERQUERY_PASSWORD=xxxxxx
-
-Then init 
-client <- sqInitClient()
-res <- sqQuery(client,sql=query)
+res <- sqQuery(jobId = "yyy", sql=query, host="proxy-dev.superquery.io")
 ```
-
+* Set your Google Cloud billing project: 
+```
+res <- sqQuery(jobId = "yyy", sql=query, projectId="zyx")
+```
 
 ## Tested With
 
