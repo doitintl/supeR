@@ -82,6 +82,16 @@ res <- sqQuery(jobId = "yyy", sql=query, host="proxy-dev.superquery.io")
 res <- sqQuery(jobId = "yyy", sql=query, projectId="zyx")
 ```
 
+* Set your Row Fetch chunk size: 
+```
+res <- sqQuery(jobId = "yyy", sql=query, rowFetch=10)
+```
+
+* Set your credentials manually: 
+```
+res <- sqQuery(jobId = "yyy", sql=query, username="xxx", password="yyyy")
+```
+
 ## Tested With
 
 * [RStudio] Version 1.2.5001

@@ -18,9 +18,9 @@ setClass(
   slots = list(
     host = "character",
     port = "numeric",
+    rowFetch = "numeric",
     username = "character",
     password = "character",
-    jobId = "character",
     projectId = "character",
     userAgent = "character",
     conn = "MySQLConnection",
@@ -32,6 +32,7 @@ setClass(
     username = Sys.getenv("SUPERQUERY_USERNAME"),
     password = Sys.getenv("SUPERQUERY_PASSWORD"),
     userAgent = "proxyApi",
+    rowFetch = 500,
     projectId = NULL
   ),
 )
@@ -92,7 +93,9 @@ setGeneric(name="sqQuery",
            def=function(sql = NULL,
                         jobId = NULL,
                         host = NULL,
-                        projectId = NULL)
+                        projectId = NULL,
+                        username = NULL,
+                        password = NULL)
            {
              standardGeneric("sqQuery")
            }
@@ -104,28 +107,37 @@ setGeneric(name="sqQuery",
 sqQuery <- function(sql = NULL,
                     jobId = NULL,
                     host = NULL,
-                    projectId = NULL){
+                    projectId = NULL,
+                    username = NULL,
+                    password = NULL,
+                    rowFetch = NULL){
   # Initialize client...
 
   client <- new("SuperQueryClient")
 
-  if (is.null(client@username) || !is.character(client@username)){
+  if (!is.null(username) && is.character(username)){
+    client@username <- username
+  }
+  if (!is.null(password) && is.character(password)){
+    client@password <- password
+  }
+  if (!is.null(rowFetch) && is.numeric(rowFetch)){
+    client@rowFetch <- rowFetch
+  }
+
+  if (client@username == "" || is.null(client@username) || !is.character(client@username)){
     stop("Please provide valid credentials as environment variables ")
   }
-  if (is.null(client@password) || !is.character(client@password)){
+  if (client@password == "" || is.null(client@password) || !is.character(client@password)){
     stop("Please provide valid credentials as environment variables ")
   }
-  if (is.null(jobId) || !is.character(jobId)){
-    if (!is.null(client@jobId) && is.character(client@jobId)){
-      jobId <- client@jobId
-    }else{
-      stop("Argument jobId must be a string")
-    }
+  if (jobId == "" || is.null(jobId) || !is.character(jobId)){
+    stop("Argument jobId must be a string")
   }
-  if (!is.null(host) && is.character(host)){
+  if (!is.null(host) && host != "" && is.character(host)){
     sqHost(client)<- host
   }
-  if (!is.null(projectId) && is.character(projectId)){
+  if (!is.null(projectId) && projectId != "" && is.character(projectId)){
     sqProjectId(client)<- projectId
   }
 
@@ -150,7 +162,13 @@ sqQuery <- function(sql = NULL,
   }
   print("Querying...")
   query <- dbSendQuery(client@conn, sql)
-  queryResult <- dbFetch(query)
+
+  l <- vector("list", dbGetRowCount(query))
+  while(!dbHasCompleted(query)){
+    chunk <- dbFetch(query, n = client@rowFetch)
+    l <- rbind (l, chunk)
+  }
+  queryResult <- l
   dbClearResult(query)
   stats <- dbSendQuery(client@conn, "explain")
   queryStats <- dbFetch(stats)

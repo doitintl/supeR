@@ -37,6 +37,15 @@ client <- sqInitClient(host="aaa", projectId="yyy" jobId = "abc", sql="SELECT")
   \item{host}{
       Override default Hostname of the Super Query Server... Mostly bi.superquery.io
   }
+  \item{username}{
+      Override environment variable Username
+  }
+  \item{password}{
+      Override environment variable Password
+  }
+  \item{rowFetch}{
+      Override default rowFetch default 500
+  }
 }
 \details{
 Connect to Super Query and Query data. Data returns as data frame result and stats
