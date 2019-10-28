@@ -1,0 +1,13 @@
+Package: supeR
+Type: Package
+Title: Connects to SuperQuery via RMySQL
+Version: 0.1.0
+Author: Corrie Painter
+Maintainer: Eben du Toit <eben@superquery.io>
+Description: The official R integration for superQuery. Connects to superQuery using RMySQL and supports querying your data. 
+    Returns a superQuery result with added statistics.
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Imports:
+    RMySQL, jsonlite
