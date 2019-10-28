@@ -16,13 +16,13 @@ These instructions will get you up and running in RStudio to query data from Sup
 
 ## Installation
 
-Binary packages for __OS-X__ or __Windows__ can be installed directly from CRAN:
+(NOT AVAILABLE YET) Binary packages for __OS-X__ or __Windows__ can be installed directly from CRAN:
 
 ```r
 install.packages("supeR")
 ```
 
-The development version from github:
+(AVAILABLE) The development version from github:
 
 ```R
 # install.packages("devtools")
