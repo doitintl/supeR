@@ -91,11 +91,11 @@ setMethod("sqHost<-","SuperQueryClient",function(x,value){
 
 setGeneric(name="sqQuery",
            def=function(sql = NULL,
-                        jobId = NULL,
-                        host = NULL,
+                        jobId = paste("supeR", toString(sample(1:50000, 1, replace=TRUE), sep = "_", collapse = NULL)),
+                        host = "bi.superquery.io",
                         projectId = NULL,
-                        username = NULL,
-                        password = NULL)
+                        username = Sys.getenv("SUPERQUERY_USERNAME"),
+                        password = Sys.getenv("SUPERQUERY_PASSWORD"))
            {
              standardGeneric("sqQuery")
            }
@@ -105,7 +105,7 @@ setGeneric(name="sqQuery",
 #' @rdname SuperR
 #' @importClassesFrom RMySQL MySQLConnection MySQLResult
 sqQuery <- function(sql = NULL,
-                    jobId = NULL,
+                    jobId = paste("supeR", toString(sample(1:50000, 1, replace=TRUE), sep = "_", collapse = NULL)),
                     host = NULL,
                     projectId = NULL,
                     username = NULL,
