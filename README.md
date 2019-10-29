@@ -98,7 +98,7 @@ res <- sqQuery(jobId = "yyy", sql=query, username="xxx", password="yyyy")
 
 ## Authors
 
-* **Corrie Painter** - *v1.0*
+* **Corrie Painter** - *v0.1*
 * **Eben du Toit**
 
 ## License
